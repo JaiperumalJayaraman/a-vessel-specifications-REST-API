@@ -90,49 +90,6 @@ Response:
 }
 ```
 
-## Data Storage
-This version stores data **in memory** (a Python list) so it has zero external
-dependencies and resets each time the server restarts. That keeps the project
-simple to run and explain. A natural next step would be swapping in a real
-database (e.g. SQLite/PostgreSQL via SQLAlchemy) — the route logic wouldn't
-need to change, just the storage layer underneath it.
-
-## Possible Extensions
-- Persistent storage (SQLite/PostgreSQL)
-- Pagination on `GET /vessels`
-- Authentication (API key or JWT)
-- Automated tests with `pytest` + `TestClient`
-
----
-
-## How to Explain This in an Interview
-
-**"What is this project?"**
-A REST API for managing vessel specifications — standard CRUD operations
-(Create, Read, Update, Delete) over HTTP.
-
-**"Why FastAPI?"**
-It's a modern Python web framework that's fast to build with, gives you
-automatic request validation, and generates interactive API docs (Swagger)
-for free — good for both development speed and documentation.
-
-**"How does validation work?"**
-Each request body is validated against a Pydantic model. If a field is
-missing, the wrong type, or fails a constraint (e.g. `gross_tonnage` must be
-greater than 0), FastAPI automatically returns a `422 Unprocessable Entity`
-with details — no manual validation code needed.
-
-**"Why those HTTP methods and status codes?"**
-- `POST` → create → `201 Created`
-- `GET` → read → `200 OK`
-- `PUT` → full update → `200 OK`
-- `DELETE` → remove → `200 OK`
-- Requesting a vessel that doesn't exist → `404 Not Found`
-
-This follows REST convention: the URL identifies the *resource*
-(`/vessels/{id}`), and the HTTP method identifies the *action* on it.
-
-**"What's the current limitation?"**
 Data lives in memory, so it's lost on restart — fine for a demo, not for
 production. The fix is a real database, and because the route functions
 only talk to a `vessels_db` variable, that swap is isolated to one layer.
